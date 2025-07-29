@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const homepageStatistic_controller_1 = require("../../controllers/HomePageControllers/homepageStatistic.controller");
+const authenticate_1 = require("../../middlewares/authenticate");
+const authorizaAdmin_1 = require("../../middlewares/authorizaAdmin");
+const router = (0, express_1.Router)();
+router.get('/', homepageStatistic_controller_1.getHomepageStatistics);
+router.use(authenticate_1.authenticate, authorizaAdmin_1.authorizeAdmin);
+router.post('/', homepageStatistic_controller_1.createHomepageStatistic);
+router.patch('/:id/', homepageStatistic_controller_1.updateHomepageStatistic);
+router.delete('/:id/', homepageStatistic_controller_1.deleteHomepageStatistic);
+exports.default = router;

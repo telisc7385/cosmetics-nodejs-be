@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const abandoned_controller_1 = require("../../controllers/Abandoned/abandoned.controller");
+const authenticate_1 = require("../../middlewares/authenticate");
+const testAbandonedcontroller_1 = require("../../controllers/Abandoned/testAbandonedcontroller");
+const router = (0, express_1.Router)();
+router.get('/get', testAbandonedcontroller_1.testAbandonedcontroller);
+router.post('/apply-discount', authenticate_1.authenticate, abandoned_controller_1.applyAbandonedCartDiscount);
+router.get('/get-discount', authenticate_1.authenticate, abandoned_controller_1.getAbandonedCartDiscount);
+router.get('/items', authenticate_1.authenticate, abandoned_controller_1.getUsersSpecificAbandonedItems);
+exports.default = router;

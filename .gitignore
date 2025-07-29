@@ -4,7 +4,7 @@ node_modules
 
 /generated/prisma
 
-dist/
+# dist/
 # Ignore all files in prisma/migrations
 # prisma/migrations/*
 !prisma/migrations/

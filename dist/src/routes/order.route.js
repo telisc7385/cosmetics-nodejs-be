@@ -1,0 +1,21 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const order_controller_1 = require("../controllers/order.controller");
+const authenticate_1 = require("../middlewares/authenticate");
+const authorizaAdmin_1 = require("../middlewares/authorizaAdmin");
+const ordersummary_controller_1 = require("../controllers/ordersummary.controller");
+const router = express_1.default.Router();
+router.get('/invoice', order_controller_1.generateInvoicePDF);
+router.post('/order-summary', ordersummary_controller_1.getOrderSummaryByPincode);
+router.get('/get-orders', authenticate_1.authenticate, authorizaAdmin_1.authorizeAdmin, order_controller_1.getOrdersForAdmin);
+router.get('/user-order', authenticate_1.authenticate, authorizaAdmin_1.authorizeAdmin, order_controller_1.getAllUserOrdersForAdmin);
+router.patch('/:orderId/status', authenticate_1.authenticate, authorizaAdmin_1.authorizeAdmin, order_controller_1.updateOrderStatus);
+router.post('/', authenticate_1.authenticate, order_controller_1.createOrder);
+router.get('/history', authenticate_1.authenticate, order_controller_1.userOrderHistory);
+router.get('/detail/:id', order_controller_1.getSingleOrder);
+router.get('/:id', authenticate_1.authenticate, order_controller_1.getOrderById);
+exports.default = router;

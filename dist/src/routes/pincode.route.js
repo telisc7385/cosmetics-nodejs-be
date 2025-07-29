@@ -1,0 +1,16 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const pincode_controller_1 = require("../controllers/pincode.controller");
+const authenticate_1 = require("../middlewares/authenticate");
+const authorizaAdmin_1 = require("../middlewares/authorizaAdmin");
+const multerCsv_1 = require("../upload/multerCsv");
+const router = (0, express_1.Router)();
+router.post('/check', pincode_controller_1.checkAvailability);
+router.use(authenticate_1.authenticate, authorizaAdmin_1.authorizeAdmin);
+router.get('/', pincode_controller_1.getPaginatedPincodes);
+router.post('/upload-csv', multerCsv_1.uploadCsv.single('file'), pincode_controller_1.uploadCsvAndUpsertPincodes);
+router.post('/', pincode_controller_1.createPincode);
+router.patch('/:id', pincode_controller_1.updatePincode);
+router.delete('/:id', pincode_controller_1.deletePincode);
+exports.default = router;
