@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import prisma from "../../db/prisma";
-import redis from "../../db/redisClient";
 
 export const getNewArrivalProducts = async (req: Request, res: Response) => {
   try {
@@ -11,7 +10,7 @@ export const getNewArrivalProducts = async (req: Request, res: Response) => {
         isDeleted: false,
       },
       orderBy: {
-        sequenceNumber: "asc",
+        sequenceNumber: "asc", 
       },
       include: {
         images: true,
@@ -35,24 +34,10 @@ export const getNewArrivalProducts = async (req: Request, res: Response) => {
   }
 };
 
+
+
 export const getProductBySlug = async (req: Request, res: Response) => {
   const { slug } = req.params;
-
-  const cacheKey = `product:${slug}`;
-
-  // Check cache
-  const cachedProduct = await redis.get(cacheKey);
-  
-  const keys = await redis.keys("*");
-  console.log("Redis keys:", keys);
-
-  if (cachedProduct) {
-    res.json({
-      success: true,
-      data: JSON.parse(cachedProduct),
-    });
-    return;
-  }
 
   try {
     const product = await prisma.product.findFirst({
@@ -81,41 +66,40 @@ export const getProductBySlug = async (req: Request, res: Response) => {
     });
 
     if (!product) {
-      res.status(404).json({
+       res.status(404).json({
         success: false,
         message: "Product not found",
       });
-      return;
+      return
     }
 
-    await redis.set(cacheKey, JSON.stringify(product), "EX", 3600);
-
-    res.status(200).json({
+         res.status(200).json({
       success: true,
       data: product,
     });
   } catch (error) {
     console.error("Error fetching product by slug:", error);
-    res.status(500).json({
+     res.status(500).json({
       success: false,
       message: "Something went wrong while fetching the product",
     });
-    return;
+    return
   }
 };
+
 
 export const getBestSellingProducts = async (req: Request, res: Response) => {
   try {
     // Step 1: Aggregate sales count grouped by productId
     const bestSellers = await prisma.orderItem.groupBy({
-      by: ["productId"],
+      by: ['productId'],
       where: {
         productId: {
           not: null,
         },
         order: {
           status: {
-            not: "CANCELLED",
+            not: 'CANCELLED',
           },
         },
       },
@@ -124,7 +108,7 @@ export const getBestSellingProducts = async (req: Request, res: Response) => {
       },
       orderBy: {
         _sum: {
-          quantity: "desc",
+          quantity: 'desc',
         },
       },
       take: 10, // get top 10
@@ -157,7 +141,7 @@ export const getBestSellingProducts = async (req: Request, res: Response) => {
       result: products,
     });
   } catch (error) {
-    console.error("Best selling products error:", error);
-    res.status(500).json({ success: false, message: "Server Error", error });
+    console.error('Best selling products error:', error);
+    res.status(500).json({ success: false, message: 'Server Error', error });
   }
 };

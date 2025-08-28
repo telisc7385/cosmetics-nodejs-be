@@ -37,33 +37,6 @@ enum NotificationType {
   SYSTEM
 }
 
-model AdminRoles {
-  id                    Int                 @id @default(autoincrement())
-  name                  String              @unique
-  user                  User[]              @relation("UserAdminRole")
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
-  AdminRolesAccessJoint AdminRolesAccessJoint[]
-}
-
-model AdminAccesses {
-  id                    Int                 @id @default(autoincrement())
-  name                  String              @unique
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
-  AdminRolesAccessJoint AdminRolesAccessJoint[]
-}
-
-model AdminRolesAccessJoint {
-  id                 Int                 @id @default(autoincrement())
-  RoleId             Int
-  AccessId           Int
-  createdAt          DateTime       @default(now())
-  updatedAt          DateTime       @updatedAt
-  AdminRoles         AdminRoles     @relation(fields: [RoleId], references: [id])
-  AdminAccesses      AdminAccesses  @relation(fields: [AccessId], references: [id]) 
-}
-
 model User {
   id                 Int                 @id @default(autoincrement())
   email              String              @unique
@@ -76,8 +49,6 @@ model User {
   resetOTP           String?
   resetOTPExpiry     DateTime?
   isDeleted          Boolean             @default(false)
-  AdminRoleId        Int?
-  AdminRole          AdminRoles?         @relation("UserAdminRole", fields: [AdminRoleId], references: [id])
   cart               Cart?
   orders             Order[]
   addresses          Address[]
