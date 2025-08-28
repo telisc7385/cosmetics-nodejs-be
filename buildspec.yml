@@ -1,0 +1,24 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18
+    commands:
+      - echo "Installing dependencies..."
+      - npm install
+
+  build:
+    commands:
+      - echo "Building TypeScript project..."
+      - npm run build
+
+  post_build:
+    commands:
+      - echo "Starting application with migrations and seed..."
+      - npm start
+
+artifacts:
+  files:
+    - '**/*'
+    - '!node_modules/**'
